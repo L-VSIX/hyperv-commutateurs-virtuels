@@ -11,20 +11,22 @@ Un **bridge réseau** sera ensuite mis en place sur l'hôte afin d'assurer la tr
 ## Procédure
 
 1. Procéder à la création du commutateur (Action › Gestionnaire de commutateur virtuel).
-2. Renseigner les informations: <img width="722" height="687" alt="hyperv" src="https://github.com/user-attachments/assets/e61ff3b2-417d-42ad-a5e6-c98ebc011e8e" />
-3. Pour permettre à l’hôte Hyper-V de communiquer sur un réseau via un commutateur virtuel externe, il est nécessaire d’ajouter une carte réseau virtuelle.
+2. Renseigner les informations:
+<img width="722" height="687" alt="hyperv" src="https://github.com/user-attachments/assets/e61ff3b2-417d-42ad-a5e6-c98ebc011e8e" />
+
+4. Pour permettre à l’hôte Hyper-V de communiquer sur un réseau via un commutateur virtuel externe, il est nécessaire d’ajouter une carte réseau virtuelle.
 ```bash
 Add-VMNetworkAdapter -ManagementOS -Name "W-GES-VLAN-tag30" -SwitchName "RAIDAPORTER_LAN" -Passthru | Set-VMNetworkAdapterVlan -Access -VlanId 30
 ```
 
 ## Bénéfice de l'approche
 
-Un seul commutateur virtuel par nœud suffit à porter l'ensemble des 6 VLAN de l'infrastructure (LAN, TEST, SRV, GES, SEC, PRA, VPN), le tagging 802.1Q se faisant au niveau de chaque interface de VM/LXC plutôt que par la multiplication de bridges physiques.
+Ajout rapide de réseaux logiques sans ajouter forcément de nouvelles cartes physiques.
 
 ## Repos liés
 
-- `proxmox-commutateurs-virtuels`
-- `conception-infrastructure-datacenter` — hôte ESXi ASUS (poste de gestion)
+- [`proxmox-commutateurs-virtuels`](https://github.com/L-VSIX/proxmox-commutateurs-virtuels)
+- [`conception-infrastructure-datacenter`](https://github.com/L-VSIX/conception-infrastructure-datacenter) — hôte ESXi ASUS (poste de gestion)
 
 ## Auteur
 
