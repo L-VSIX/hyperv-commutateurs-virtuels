@@ -10,9 +10,12 @@ Un **bridge réseau** sera ensuite mis en place sur l'hôte afin d'assurer la tr
 
 ## Procédure
 
-1. Activer *VLAN aware* sur l'interface physique `vmbr0` (Datacenter › Système réseau).
-2. Pour chaque VLAN métier, créer une interface logique dédiée (Linux Bond ou Linux VLAN) avec l'IP de passerelle et le tag correspondant.
-3. Sur chaque VM ou conteneur LXC, attacher la carte réseau virtuelle à `vmbr0` en renseignant simplement le **tag VLAN** voulu — pas besoin de bridge dédié par VLAN.
+1. Procéder à la création du commutateur (Action › Gestionnaire de commutateur virtuel).
+2. Renseigner les informations: <img width="722" height="687" alt="hyperv" src="https://github.com/user-attachments/assets/e61ff3b2-417d-42ad-a5e6-c98ebc011e8e" />
+3. Pour permettre à l’hôte Hyper-V de communiquer sur un réseau via un commutateur virtuel externe, il est nécessaire d’ajouter une carte réseau virtuelle.
+```bash
+Add-VMNetworkAdapter -ManagementOS -Name "W-GES-VLAN-tag30" -SwitchName "RAIDAPORTER_LAN" -Passthru | Set-VMNetworkAdapterVlan -Access -VlanId 30
+```
 
 ## Bénéfice de l'approche
 
