@@ -1,24 +1,22 @@
 # 🔀 Administration de commutateurs virtuels — Hyper-V
 
-> Volet Hyper-V de la découverte des mécanismes de commutation virtuelle, en miroir de l'approche Proxmox.
+> Configuration du bridge réseau `vmbr0` en mode VLAN aware pour porter la segmentation à 6 VLAN sur les hyperviseurs Proxmox.
 
-## Statut
+## Principe
 
-🚧 **Documentation à compléter** — ce volet correspond à une phase d'exploration de l'hyperviseur Hyper-V (poste de gestion Windows / VMware Workstation), en parallèle du socle Proxmox qui constitue l'infrastructure de production du homelab. Les procédures détaillées restent à formaliser dans ce dépôt.
+Le port Ethernet du PC hôte **ASUS**, sur lequel est exécuté **VMware Workstation**, sera connecté au **switch TP-Link**.
+Un **commutateur virtuel Hyper-V** sera configuré afin de permettre le transport du **VLAN GES** jusqu'à l'hyperviseur VMware Workstation.
+Un **bridge réseau** sera ensuite mis en place sur l'hôte afin d'assurer la transmission du trafic VLAN tagué vers les machines virtuelles concernées.
 
-## Objectif de la démarche
+## Procédure
 
-Comparer les mécanismes de commutation virtuelle entre deux familles d'hyperviseurs :
+1. Activer *VLAN aware* sur l'interface physique `vmbr0` (Datacenter › Système réseau).
+2. Pour chaque VLAN métier, créer une interface logique dédiée (Linux Bond ou Linux VLAN) avec l'IP de passerelle et le tag correspondant.
+3. Sur chaque VM ou conteneur LXC, attacher la carte réseau virtuelle à `vmbr0` en renseignant simplement le **tag VLAN** voulu — pas besoin de bridge dédié par VLAN.
 
-- **Proxmox (type 1, bare-metal)** : commutateur Linux Bridge en mode VLAN aware, tagging porté par chaque interface de VM/LXC (voir `proxmox-commutateurs-virtuels`).
-- **Hyper-V (intégré Windows)** : commutateurs virtuels externes/internes/privés, VLAN ID configuré au niveau de l'adaptateur réseau virtuel de chaque VM.
+## Bénéfice de l'approche
 
-## Points de comparaison à documenter
-
-- [ ] Types de commutateurs virtuels Hyper-V (externe, interne, privé) et cas d'usage
-- [ ] Configuration du tagging VLAN par adaptateur réseau virtuel
-- [ ] Différences de performance et d'isolation observées face à l'approche Proxmox
-- [ ] Cas d'usage retenu pour le poste de gestion (VMware Workstation / postes W11)
+Un seul commutateur virtuel par nœud suffit à porter l'ensemble des 6 VLAN de l'infrastructure (LAN, TEST, SRV, GES, SEC, PRA, VPN), le tagging 802.1Q se faisant au niveau de chaque interface de VM/LXC plutôt que par la multiplication de bridges physiques.
 
 ## Repos liés
 
